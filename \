@@ -16,7 +16,6 @@ import { PauseIcon, PlayIcon } from "@heroicons/react/24/solid";
 import snareMP3 from "/sample/kit-snare.mp3";
 import tomMP3 from "/sample/kit-tom.mp3";
 import hatMP3 from "/sample/kit-hat.mp3";
-import DrumKit from "src/components/models/DrumKit";
 
 const AnimatedShape = animated(ShapeComponent);
 
@@ -60,13 +59,15 @@ const Rythm = () => {
   const [currentStep, setCurrentStep] = useState(0);
 
   const startPlaying = useCallback(() => {
+    setCurrentStep(0);
+
     Tone.start();
+    Tone.Transport.start(0);
     setIsPlaying(true);
   }, []);
 
   const stopPlaying = useCallback(() => {
     setIsPlaying(false);
-    setCurrentStep(0);
   }, []);
 
   const handleIsPlayingToggle = useCallback(() => {
@@ -108,8 +109,6 @@ const Rythm = () => {
 
   useEffect(() => {
     if (isPlaying) {
-      Tone.Transport.start(0);
-
       loopRef.current = new Tone.Loop(() => {
         triggerInstruments();
         setCurrentStep((prev) => (prev + 1) % 8);
@@ -121,13 +120,9 @@ const Rythm = () => {
     };
   }, [isPlaying, triggerInstruments]);
 
-  const isHatActive = instruments[0].sequence[currentStep];
-  const isSnareActive = instruments[1].sequence[currentStep];
-  const isTomActive = instruments[2].sequence[currentStep];
-
   return (
     <>
-      <section className="relative flex-1 size-full">
+      <section className="relative flex-1">
         <div
           className="absolute inset-0 z-0 animate-bg-pan bg-amber-400"
           style={{
@@ -137,25 +132,14 @@ const Rythm = () => {
           }}
         />
 
-        <Canvas style={{ position: "absolute" }}>
-          <ambientLight intensity={0.25} />
-          <directionalLight />
-
-          <OrbitControls
-            enableDamping
-            enablePan
-            enableRotate
-            enableZoom
-            zoom0={8}
-            minZoom={6}
-            maxDistance={12}
-          />
-
-          <DrumKit
-            isSnareActive={isSnareActive}
-            isTomActive={isTomActive}
-            isHatActive={isHatActive}
-          />
+        <Canvas>
+          <OrbitControls enableDamping enablePan enableRotate enableZoom />
+          <ambientLight intensity={0.1} />
+          <directionalLight color="red" position={[0, 0, 5]} />
+          <mesh>
+            <boxGeometry />
+            <meshStandardMaterial />
+          </mesh>
         </Canvas>
       </section>
 
