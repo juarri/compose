@@ -1,6 +1,8 @@
 import React, { Suspense } from "react";
 import { createRootRoute, Outlet } from "@tanstack/react-router";
 
+import "@fontsource-variable/rubik";
+
 const TanStackRouterDevtools = import.meta.env.PROD
   ? () => null // Render nothing in production
   : React.lazy(() =>

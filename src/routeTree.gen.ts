@@ -17,7 +17,9 @@ import { Route as rootRoute } from './routes/__root'
 // Create Virtual Routes
 
 const IndexLazyImport = createFileRoute('/')()
-const RythmIndexLazyImport = createFileRoute('/rythm/')()
+const ToolsDrumMachineIndexLazyImport = createFileRoute(
+  '/tools/drum-machine/',
+)()
 
 // Create/Update Routes
 
@@ -26,10 +28,12 @@ const IndexLazyRoute = IndexLazyImport.update({
   getParentRoute: () => rootRoute,
 } as any).lazy(() => import('./routes/index.lazy').then((d) => d.Route))
 
-const RythmIndexLazyRoute = RythmIndexLazyImport.update({
-  path: '/rythm/',
+const ToolsDrumMachineIndexLazyRoute = ToolsDrumMachineIndexLazyImport.update({
+  path: '/tools/drum-machine/',
   getParentRoute: () => rootRoute,
-} as any).lazy(() => import('./routes/rythm/index.lazy').then((d) => d.Route))
+} as any).lazy(() =>
+  import('./routes/tools/drum-machine/index.lazy').then((d) => d.Route),
+)
 
 // Populate the FileRoutesByPath interface
 
@@ -39,8 +43,8 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexLazyImport
       parentRoute: typeof rootRoute
     }
-    '/rythm/': {
-      preLoaderRoute: typeof RythmIndexLazyImport
+    '/tools/drum-machine/': {
+      preLoaderRoute: typeof ToolsDrumMachineIndexLazyImport
       parentRoute: typeof rootRoute
     }
   }
@@ -50,7 +54,7 @@ declare module '@tanstack/react-router' {
 
 export const routeTree = rootRoute.addChildren([
   IndexLazyRoute,
-  RythmIndexLazyRoute,
+  ToolsDrumMachineIndexLazyRoute,
 ])
 
 /* prettier-ignore-end */
